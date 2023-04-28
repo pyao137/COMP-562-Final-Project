@@ -8,5 +8,13 @@ df = pd.read_csv('Datasets/Ebay Used Cars.csv')
 ndf = df[df['zipcode'].str.len() == 5]
 ndf = ndf[ndf['zipcode'].str[2:5] != '***']
 ndf['zipcode'] = ndf['zipcode'].str[:-2]
-ndf['zipcode'] = pd.to_numeric(ndf['zipcode'], downcast = 'integer')
-print(ndf.head(1000))
+df['zipcode'] = pd.to_numeric(ndf['zipcode'], downcast = 'integer')
+
+#Drop unneeded columns
+df = df.drop('Trim', axis=1)
+df = df.drop('Engine', axis=1)
+
+#Clean up drive type and num-cylinders
+df = df[df['DriveType'].str.len() == 3]
+df = df[df['NumCylinders'] != 0]
+print(len(df))
