@@ -1,8 +1,7 @@
 import numpy as np
+import pandas as pd
 import csv
 from sklearn.utils import Bunch
-
-
 
 def load_my_fancy_dataset(Dataset_name):
     with open('%s.csv' % Dataset_name, 'r') as csv_file:
