@@ -18,3 +18,12 @@ df = df.drop('Engine', axis=1)
 df = df[df['DriveType'].str.len() == 3]
 df = df[df['NumCylinders'] != 0]
 print(len(df))
+
+#find the top 20 variables in BodyType
+top_20 = df['BodyType'].value_counts().head(20)
+print(top_20)
+sum_counts = top_20.sum()
+# Print the sum of the value counts
+print(sum_counts)
+
+#Clean up drive type and num-cylinders
