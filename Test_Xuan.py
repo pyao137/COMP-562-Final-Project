@@ -25,6 +25,7 @@ print(len(df))
 print (df.dtypes)
 
 #Find the top 20 variables in BodyType
+df['BodyType'] = df['BodyType'].str.lower()
 top_20 = df['BodyType'].value_counts().head(20)
 print(top_20)
 sum_counts = top_20.sum()
@@ -34,3 +35,6 @@ print(sum_counts)
 #Clean up BodyType
 df = df[df['BodyType'].isin(top_20.index)]
 print(len(df))
+
+
+
