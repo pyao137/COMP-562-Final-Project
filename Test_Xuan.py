@@ -24,11 +24,13 @@ print(len(df))
 
 print (df.dtypes)
 
-#find the top 20 variables in BodyType
+#Find the top 20 variables in BodyType
 top_20 = df['BodyType'].value_counts().head(20)
 print(top_20)
 sum_counts = top_20.sum()
 # Print the sum of the value counts
 print(sum_counts)
 
-#Clean up drive type and num-cylinders
+#Clean up BodyType
+df = df[df['BodyType'].isin(top_20.index)]
+print(len(df))
