@@ -35,6 +35,6 @@ print(sum_counts)
 df = df[df['BodyType'].isin(top_20.index)]
 print(len(df))
 
-# Added a new column for the the age of the car
+# Added a new column for the age of the car
 df['CarAge'] = 2023 - df['Year']
 df.info()
