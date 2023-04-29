@@ -3,12 +3,15 @@ import pandas as pd
 import csv
 from sklearn.utils import Bunch
 
+
 #Clean up zipcode
 df = pd.read_csv('Datasets/Ebay Used Cars.csv')
 ndf = df[df['zipcode'].str.len() == 5]
 ndf = ndf[ndf['zipcode'].str[2:5] != '***']
 ndf['zipcode'] = ndf['zipcode'].str[:-2]
-df['zipcode'] = pd.to_numeric(ndf['zipcode'], downcast = 'integer')
+df['zipcode'] = pd.to_numeric(ndf['zipcode'], downcast = 'integer').astype('Int64')
+df = df.dropna()
+df['zipcode'] = df['zipcode'].astype('int64')  
 
 #Drop unneeded columns
 df = df.drop('Trim', axis=1)
@@ -18,6 +21,8 @@ df = df.drop('Engine', axis=1)
 df = df[df['DriveType'].str.len() == 3]
 df = df[df['NumCylinders'] != 0]
 print(len(df))
+
+print (df.dtypes)
 
 #find the top 20 variables in BodyType
 top_20 = df['BodyType'].value_counts().head(20)
