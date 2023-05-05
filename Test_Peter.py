@@ -2,6 +2,13 @@ import numpy as np
 import pandas as pd
 import csv
 from sklearn.utils import Bunch
+from sklearn.ensemble        import HistGradientBoostingRegressor
+
+def encode_and_bind(original_dataframe, feature_to_encode):
+    dummies = pd.get_dummies(original_dataframe[[feature_to_encode]])
+    res = pd.concat([original_dataframe, dummies], axis=1)
+    res = res.drop([feature_to_encode], axis=1)
+    return(res) 
 
 #Read the file
 df = pd.read_csv('Datasets/Ebay Used Cars.csv')
@@ -50,7 +57,29 @@ df['zipcode'] = df['zipcode'].astype('int64')
 
 # Added a new column for the age of the car
 df['CarAge'] = 2023 - df['Year']
+
+#One-hot encode all categorical variables
+features_to_encode = ['Make', 'Model', 'BodyType', 'DriveType']
+for feature in features_to_encode:
+    df = encode_and_bind(df, feature)
+
+
+#Randomize rows and split dataset into train, test, and validation data
+df = df.sample(frac=1)
 df.info()
+
+train_df = df.iloc[:55000,:]
+#test_df = df.iloc[50000:59000,:]
+val_df = df.iloc[55000:,:]
+
+#Train the model
+train_x = train_df.drop("pricesold", axis = 1).to_numpy()
+train_y = (train_df["pricesold"]).to_numpy()
+val_x = val_df.drop("pricesold", axis = 1).to_numpy()
+val_y = (val_df["pricesold"]).to_numpy()
+regressor =  HistGradientBoostingRegressor()
+regressor.fit(train_x, train_y)
+
 
 
 #TODO
