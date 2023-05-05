@@ -52,7 +52,7 @@ ndf = df[df['zipcode'].str.len() == 5]
 ndf = ndf[ndf['zipcode'].str[2:5] != '***']
 ndf['zipcode'] = ndf['zipcode'].str[:-2]
 df['zipcode'] = pd.to_numeric(ndf['zipcode'], downcast='integer').astype('Int64')
-df = df.dropna()
+df = df.dropna() #Drop nulls
 df['zipcode'] = df['zipcode'].astype('int64')
 
 # Added a new column for the age of the car
@@ -73,12 +73,15 @@ train_df = df.iloc[:55000,:]
 val_df = df.iloc[55000:,:]
 
 #Train the model
+df_x = df.drop("pricesold", axis = 1).to_numpy()
+df_y = (df["pricesold"]).to_numpy()
 train_x = train_df.drop("pricesold", axis = 1).to_numpy()
 train_y = (train_df["pricesold"]).to_numpy()
 val_x = val_df.drop("pricesold", axis = 1).to_numpy()
 val_y = (val_df["pricesold"]).to_numpy()
-regressor =  HistGradientBoostingRegressor()
-regressor.fit(train_x, train_y)
+regressor = HistGradientBoostingRegressor()
+regressor.fit(df_x, df_y)
+print(regressor.score(df_x, df_y))
 
 
 
