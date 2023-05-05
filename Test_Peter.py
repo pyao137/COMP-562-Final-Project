@@ -4,7 +4,7 @@ import csv
 from sklearn.utils import Bunch
 from sklearn.ensemble        import HistGradientBoostingRegressor
 
-def encode_and_bind(original_dataframe, feature_to_encode):
+def one_hot(original_dataframe, feature_to_encode):
     dummies = pd.get_dummies(original_dataframe[[feature_to_encode]])
     res = pd.concat([original_dataframe, dummies], axis=1)
     res = res.drop([feature_to_encode], axis=1)
@@ -18,6 +18,7 @@ df = df.drop('Trim', axis=1)
 df = df.drop('Engine', axis=1)
 df = df.drop('yearsold', axis = 1)
 df = df.drop('NumCylinders', axis = 1)
+df = df.drop('ID', axis = 1)
 
 # Clean up drive type and num-cylinders (drop 0 cylinder cars and drop outlier DriveTypes)
 df = df[df['DriveType'].str.len() == 3]
@@ -59,9 +60,9 @@ df['zipcode'] = df['zipcode'].astype('int64')
 df['CarAge'] = 2023 - df['Year']
 
 #One-hot encode all categorical variables
-features_to_encode = ['Make', 'Model', 'BodyType', 'DriveType']
-for feature in features_to_encode:
-    df = encode_and_bind(df, feature)
+one_hot_features = ['Make', 'Model', 'BodyType', 'DriveType']
+for feature in one_hot_features:
+    df = one_hot(df, feature)
 
 
 #Randomize rows and split dataset into train, test, and validation data
