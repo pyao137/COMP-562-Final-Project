@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import scipy.stats as stats
 from scipy.stats import skew
+
 plt.style.use('ggplot')
 sns.set()
 
@@ -110,6 +111,25 @@ for i, variable in enumerate(numeric_columns):
     plt.title(variable)
 plt.show()
 
+cat_columns = ['Make', 'Mileage', 'DriveType', 'pricesold']  # cars.select_dtypes(
+# exclude=np.number).columns.tolist()
+
+plt.figure(figsize=(15, 21))
+
+for i, variable in enumerate(cat_columns):
+    plt.subplot(4, 2, i + 1)
+    order = df[variable].value_counts(ascending=False).index
+    ax = sns.countplot(x=df[variable], data=df, order=order, palette='viridis')
+    for p in ax.patches:
+        percentage = '{:.1f}%'.format(100 * p.get_height() / len(df[variable]))
+        x = p.get_x() + p.get_width() / 2 - 0.05
+        y = p.get_y() + p.get_height()
+        plt.annotate(percentage, (x, y), ha='center')
+    plt.xticks(rotation=90)
+    plt.tight_layout()
+    plt.title(variable)
+
+plt.show()
 # TODO
 # Drop rows with mileage and price under a certain extreme amount
 # Drop years which are not in a certain range (say 1920 - 2020). Drop yearsold column
