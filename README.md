@@ -25,8 +25,8 @@ Trial 2 not dropping num cylinders error: /usr/local/lib/python3.10/dist-package
   This issue is for the ridge regression model
 
 TODO:
-1. Figure out how to get root mean square error and mean absolute error in scoring
+1. Figure out how to get root mean square error and mean absolute error in scoring CHECK
 2. Ensemble Either randforest or histgradient and train over epochs
-3. Find alternatives to one-hot encoding of categorical variables (as too many columns)
+3. Find alternatives to one-hot encoding of categorical variables (as too many columns) CHECK
 4. Possibly use grid search to tune hyperparmeters for the decision tree models
 5. Neural Net?
