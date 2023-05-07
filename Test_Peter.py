@@ -1,6 +1,11 @@
 import pandas as pd
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.ensemble import RandomForestRegressor
+
+DROP_CYL = False
 
 def one_hot(original_dataframe, feature_to_encode):
     dummies = pd.get_dummies(original_dataframe[[feature_to_encode]])
@@ -15,15 +20,19 @@ df = pd.read_csv('Datasets/Ebay Used Cars.csv')
 df = df.drop('Trim', axis=1)
 df = df.drop('Engine', axis=1)
 df = df.drop('yearsold', axis = 1)
-df = df.drop('NumCylinders', axis = 1)
 df = df.drop('ID', axis = 1)
 
-# Clean up drive type and num-cylinders (drop 0 cylinder cars and drop outlier DriveTypes)
+#Possible: Drop num cylinders
+if (DROP_CYL):
+   df = df.drop('NumCylinders', axis = 1)
+else: #Clean up num-cylinders if not dropped
+  df = df[df['NumCylinders'] != 0]
+
+# Clean up drive type (drop outlier DriveTypes)
 df = df[df['DriveType'].str.len() == 3]
 df['DriveType'] = df['DriveType'].str.lower()
 drive_types = df['DriveType'].value_counts().gt(10)
 df = df.loc[df['DriveType'].isin(drive_types[drive_types].index)]
-#df = df[df['NumCylinders'] != 0]
 
 #Clean up BodyType (Drop outliers with freq. under 50)
 df['BodyType'] = df['BodyType'].str.lower()
@@ -62,34 +71,36 @@ one_hot_features = ['Make', 'Model', 'BodyType', 'DriveType']
 for feature in one_hot_features:
     df = one_hot(df, feature)
 
-
 #Randomize rows and split dataset into train, test, and validation data
 df = df.sample(frac=1)
 df.info()
-train_df = df.iloc[:55000,:]
-val_df = df.iloc[55000:,:]
 
-#Train the model
+if ('NumCylinders' in df):
+  train_df = df.iloc[:52000,:]
+  val_df = df.iloc[52000:,:]
+else:
+  train_df = df.iloc[:58000,:]
+  val_df = df.iloc[58000:,:]
+
 df_x = df.drop("pricesold", axis = 1).to_numpy()
 df_y = (df["pricesold"]).to_numpy()
 train_x = train_df.drop("pricesold", axis = 1).to_numpy()
 train_y = (train_df["pricesold"]).to_numpy()
 val_x = val_df.drop("pricesold", axis = 1).to_numpy()
 val_y = (val_df["pricesold"]).to_numpy()
-regressor = HistGradientBoostingRegressor()
-regressor.fit(train_x, train_y)
-print(regressor.score(val_x, val_y))
 
-#linreg = LinearRegression().fit(df_x, df_y)
-#print(linreg.score(df_x, df_y))
+#Train models
+RFreg = RandomForestRegressor().fit(train_x, train_y)
+print(RFreg.score(val_x, val_y))
 
+hreg = HistGradientBoostingRegressor().fit(train_x, train_y)
+print(hreg.score(val_x, val_y))
 
+gbreg = GradientBoostingRegressor().fit(train_x, train_y)
+print(gbreg.score(val_x, val_y))
 
-#TODO
-# Drop rows with mileage and price under a certain extreme amount
-# Drop years which are not in a certain range (say 1920 - 2020). Drop yearsold column
-# Drop rows where Make and Model have values which are extremely low frequency (under 20 occurrences)
-# Instead of only keeping the first x most common frequencies of BodyType and DriveType, drop those entries
-  # whose frequencies are outlier-range (say under 10 occurrences)
-  # Possibly drop BodyType column entirely as this may be dependent variable on make and model
-# How to handle electric cars? Perhaps drop the num-cylinders column entirely?
+ridgereg = Ridge().fit(train_x, train_y)
+print(ridgereg.score(val_x, val_y))
+
+linreg = LinearRegression().fit(df_x, df_y)
+print(linreg.score(df_x, df_y))
