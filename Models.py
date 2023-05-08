@@ -12,9 +12,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error ,mean_absolute_error
 from sklearn.inspection import permutation_importance
 
-
 DROP_CYL = False #DON'T CHANGE
-
 ONE_HOT = False
 
 def one_hot(df, feature):
@@ -67,7 +65,6 @@ def build_fit_ensemble_hreg(train_sets_x, train_sets_y):
 #Read the file
 df = pd.read_csv('gdrive/My Drive/Ebay Used Cars.csv')
 etest = df[df['Engine'].str.lower() == 'electric'] #2 no non-tesla makes have more than 15 sales as marked electric cars:
-#print(etset['Model'].value_counts().gt(10))
 
 # Drop unneeded columns
 df = df.drop('Trim', axis=1)
@@ -152,4 +149,65 @@ for i in range(5):
 print(len(train_sets_x[0]))
 print(df.info())
 
-#Train and test
+#Train, test and get feature importance for HistGradientBoostingRegressor
+with cProfile.Profile() as pr:
+  hreg = HistGradientBoostingRegressor(max_iter = 1000, loss = 'squared_error')
+  hreg.fit(train_x ,train_y)
+  print("time to fit:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+with cProfile.Profile() as pr:
+    get_scores("hreg", hreg, val_x, val_y)
+    print("time to run:")
+    stats = Stats(pr)
+    stats.sort_stats('tottime').print_stats(5)
+  
+get_feature_importance('hreg', hreg, val_x, val_y)
+
+#Train, test, and get feature importance for RandomForest
+with cProfile.Profile() as pr:
+  rfreg = RandomForestRegressor(n_estimators = 100, min_samples_split = 3, min_samples_leaf = 3, random_state = 101)
+  rfreg.fit(train_x, train_y)
+  print("time to fit:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+with cProfile.Profile() as pr:
+  get_scores("rfreg", rfreg, val_x, val_y)
+  print("time to run:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+get_feature_importance('rfreg', rfreg, val_x, val_y)
+
+#Train, test, and get coefficients for LinearRegression
+with cProfile.Profile() as pr:
+  linreg = LinearRegression()
+  linreg.fit(train_x, train_y)
+  print("time to fit:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+with cProfile.Profile() as pr:
+  get_scores("linreg", linreg, val_x, val_y)
+  print("time to run:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+print("Coefficients for linreg")
+for i in range(len(linreg.coef_)):
+  print(f'{df.columns[i + 1]}: {linreg.coef_[i]}')
+
+#Train and test ensembled hreg
+with cProfile.Profile() as pr:
+  ensemble_hreg = build_fit_ensemble_hreg(train_sets_x, train_sets_y)
+  print("time to fit:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
+
+with cProfile.Profile() as pr:
+  get_scores_ensembled("ens-hreg", ensemble_hreg, val_x, val_y)
+  print("time to run:")
+  stats = Stats(pr)
+  stats.sort_stats('tottime').print_stats(5)
