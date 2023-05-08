@@ -101,6 +101,7 @@ df = df.loc[df['Make'].isin(makes[makes].index)]
 df = df[df['Mileage'] > 100]
 df = df[df['Mileage'] < 400000]
 df = df[df['Year'] > 1920]
+df = df[df['Year'] < 2021]
 df = df[df['pricesold'] > 200]
 
 #Clean up num-cylinders if not dropped
