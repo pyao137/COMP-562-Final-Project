@@ -7,6 +7,7 @@
 \usepackage{geometry}
 \usepackage{lipsum}
 \usepackage{sectsty}
+\usepackage{graphicx}
 \raggedbottom
 \sectionfont{\bfseries\Large\raggedright}
 \geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
@@ -61,12 +62,58 @@
         any remaining rows with null values. In the end, about 60,000 of the original ~160,000 entries remained.
         \newline
         \subsection{Data Visualization}
-        We investigate
-    \section{Models and Results}
+        The result of visual data is shown below:
+        \newline
     
+    \section{Methodology}
+    After preprocessing the data, we trained three models – HistGradientBoostingRegression, RandomForest, 
+    and LinearRegression – on the training dataset. The performance of each model was evaluated on the validation dataset 
+    in terms of accuracy and speed. The evaluation was carried out using mean squared error (MSE) and mean absolute error (MAE). 
+    We then selected one of the three (HistGradientBoostingRegressor) based on the evaluation results and used an ensembling technique to enhance its effectiveness. 
+    
+    Furthermore, we also compared the results of using one-hot encoding vs. ordinal encoding on the three models, and the ensemble model.
+    \newline
+
+    
+    \section{Models and Results}
+        \subsection{Model Results}
+        Chart depicting mean absolute error, mean squared error, time to fit, and time to run for each model over 3 trials as the chart shown below:
+
+        
+        On each trial, a new model was instantiated and trained. For RandomForests, the random state was changed from 0 to 42 to 101 on trials 1, 2, and 3. This is to prevent the model from training the same way on each trial. For Linreg, the model would be the same for each trial so MSE and MAE results are only shown for trial 1
+        
+        According to the result, the HistGradientBoostingRegressor with an ensembling technique (Ensemble HG) has the lowest mean absolute error and mean squared error compare to other models, which indicates that Ensemble HG is the best-performing model in terms of prediction accuracy. In terms of computational efficiency, HistGradientBoostingRegressor (HGBReg) takes less time to fit and run, it will be a good alternative if looking for a balance between accuracy and computational efficiency.
+        \newline
+        \subsection{Model Results on Feature Importance}
+    
+         Based on the chart, for Hreg and Rfreg models, the permutation importance follows the order: Year $>$ Mileage $>$ NumCylinders $>$ Model $>$ Make $>$ BodyType $>$ DriveType $>$ zipcode. And in the coefficients of Linear regression, Year, Make, and zipcode have a positive impact, and Mileage, Model, BodyType, and DriveType have a negative impact. Overall, Year and Mileage have the most permutation importance for predicting the target variable in all three models. \newline
+
+
     \section{Discussion}
+    Our project used different models to predict used car prices based on the dataset obtained from Kaggle. However, this dataset was sourced from eBay and had a relatively small number of records. Getting a bigger and more diverse range of data may produce more robust results.
+    \newline
+    Furthermore, we probably can explore more models, like recurrent neural networks (RNN) and knearest neighbors algorithm (KNN), in the future. Both of them can be potential good models for used car price prediction.
+    \newline
+    Also, we can attempt to do some hyperparameter tuning and look for optimal hyperparameters.
+    \newline
+    
+    \section{References}
+    \begin{enumerate}
+        \item Ts. (2020, November 16). US used car sales data. Kaggle. \newline
+        \url{https://www.kaggle.com/datas/ets/tsaustin/us-used-car-sales-data}
 
+        \item Moore, C. J. (2022, January 18). U.S. used-vehicle sales record set in 2021. Automotive News. \url{https://www.autonews.com/retail/used-car-sales-set-us-record-2021-cox-automotive-say}
 
+        \item US used car market size & share analysis - industry research report - growth trends. US Used Car Market Size & Share Analysis - Industry Research Report - Growth Trends. (n.d.). \newline
+        \url{https://www.mordorintelligence.com/industry-reports/united-states-used-car-market}
 
+        \item Used cars price prediction and valuation using data mining techniques. (2021).\newline
+        \url{https://scholarworks.rit.edu/cgi/viewcontent.cgi?article=12220&context=theses}
 
+        \item Jain, S. (2021, May 17). Used car price prediction using supervised machine learning. Medium. \url{https://shubh17121996.medium.com/used-car-price-prediction-using-supervised-machine-learning-ea9dace76686}
+
+        \item Hagerty, M. (2022, January 27). Factors that can affect used car trade-in value. Capital One Auto Navigator. \url{https://www.capitalone.com/cars/learn/managing-your-money-wise/factors-that-can-affect-used-car-tradein-value/1224}
+
+        \item Gong, J., Peng, L., & Li, J. (2018a). A study on the factors affecting the value of used cars in Panzhihua region. Proceedings of the 2nd International Forum on Management, Education and Information Technology Application (IFMEITA 2017). \url{https://doi.org/10.2991/ifmeita17.2018}.
+    \end{enumerate}
 \end{document} % This is the end of the document
