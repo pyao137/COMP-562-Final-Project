@@ -5,10 +5,7 @@ import numpy as np
 from pstats import Stats
 from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import GradientBoostingRegressor
-from sklearn.linear_model import Ridge
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import cross_val_score
 from sklearn.metrics import mean_squared_error ,mean_absolute_error
 from sklearn.inspection import permutation_importance
 
