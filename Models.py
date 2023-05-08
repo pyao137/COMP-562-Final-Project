@@ -137,7 +137,7 @@ train_y = (train_df["pricesold"]).to_numpy()
 val_x = val_df.drop("pricesold", axis = 1).to_numpy()
 val_y = (val_df["pricesold"]).to_numpy()
 
-#Split train data into 5-folds (for use on the ensembling technique):
+#Split train data into 5 folds (for use on the ensembling technique):
 train_sets_x = []
 train_sets_y = []
 for i in range(5):
