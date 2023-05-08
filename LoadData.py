@@ -5,7 +5,6 @@ DROP_CYL = False #DON'T CHANGE
 def load_data(path):
     #Read the file
     df = pd.read_csv(path)
-    etest = df[df['Engine'].str.lower() == 'electric'] #2 no non-tesla makes have more than 15 sales as marked electric cars:
 
     # Drop unneeded columns
     df = df.drop('Trim', axis=1)
